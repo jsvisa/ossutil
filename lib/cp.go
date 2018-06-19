@@ -2,6 +2,7 @@ package lib
 
 import (
 	"fmt"
+	"io"
 	"math"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 
 	oss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 	leveldb "github.com/syndtr/goleveldb/leveldb"
+	"golang.org/x/crypto/openpgp/packet"
 )
 
 type operationType int
@@ -49,6 +51,8 @@ type copyOptionType struct {
 	force        bool
 	update       bool
 	ctnu         bool
+	publicKey    *packet.PublicKey
+	privateKey   *packet.PrivateKey
 }
 
 type filterOptionType struct {
@@ -1129,6 +1133,8 @@ var copyCommand = CopyCommand{
 			OptionParallel,
 			OptionSnapshotPath,
 			OptionDisableCRC64,
+			OptionPGPPublicKey,
+			OptionPGPPrivateKey,
 		},
 	},
 }
@@ -1242,6 +1248,13 @@ func (cc *CopyCommand) RunCommand() error {
 		}
 		defer cc.cpOption.snapshotldb.Close()
 	}
+
+	// load public/private key
+
+	publicKey, _ := GetString(OptionPGPPublicKey, cc.command.options)
+	privateKey, _ := GetString(OptionPGPPrivateKey, cc.command.options)
+	cc.cpOption.publicKey = decodePublicKey(DecidePGPKeyPath(publicKey))
+	cc.cpOption.privateKey = decodePrivateKey(DecidePGPKeyPath(privateKey))
 
 	cc.monitor.init(opType)
 
@@ -1725,9 +1738,16 @@ func (cc *CopyCommand) ossPutObjectRetry(bucket *oss.Bucket, objectName string, 
 func (cc *CopyCommand) ossUploadFileRetry(bucket *oss.Bucket, objectName string, filePath string, options ...oss.Option) error {
 	retryTimes, _ := GetInt(OptionRetryTimes, cc.command.options)
 	for i := 1; ; i++ {
-		err := bucket.PutObjectFromFile(objectName, filePath, options...)
-		if err == nil {
+		fileEncoded, err := encryptFile(cc.cpOption.publicKey, cc.cpOption.privateKey, filePath)
+		if err != nil {
 			return err
+		}
+		info, _ := os.Stat(filePath)
+		options = append(options, oss.Meta("fileMode", strconv.Itoa(int(info.Mode()))))
+		options = append(options, oss.Meta("fileCreated", strconv.FormatInt(info.ModTime().Unix(), 10)))
+
+		if err = bucket.PutObject(objectName, fileEncoded, options...); err == nil {
+			return nil
 		}
 		if int64(i) >= retryTimes {
 			return FileError{err, filePath}
@@ -2008,9 +2028,39 @@ func (cc *CopyCommand) createParentDirectory(fileName string) error {
 func (cc *CopyCommand) ossDownloadFileRetry(bucket *oss.Bucket, objectName, fileName string, options ...oss.Option) error {
 	retryTimes, _ := GetInt(OptionRetryTimes, cc.command.options)
 	for i := 1; ; i++ {
-		err := bucket.GetObjectToFile(objectName, fileName, options...)
-		if err == nil {
+		request := oss.GetObjectRequest{ObjectKey: objectName}
+		result, err := bucket.DoGetObject(&request, options)
+		if err != nil {
 			return err
+		}
+		body := result.Response.Body
+		if decrypted, err := decryptFile(cc.cpOption.publicKey, cc.cpOption.privateKey, body); err == nil {
+			body.Close()
+
+			fd, err := os.OpenFile(fileName, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0644)
+			if err != nil {
+				return err
+			}
+			_, err = io.Copy(fd, decrypted)
+			fd.Close()
+			if err != nil {
+				return err
+			}
+
+			if fileMode := result.Response.Headers.Get(oss.HTTPHeaderOssMetaPrefix + "fileMode"); fileMode != "" {
+				if mode, err := strconv.Atoi(fileMode); mode != 0 && err == nil {
+					os.Chmod(fileName, os.FileMode(mode))
+				}
+			}
+
+			if fileCreated := result.Response.Headers.Get(oss.HTTPHeaderOssMetaPrefix + "fileCreated"); fileCreated != "" {
+				if created, err := strconv.ParseInt(fileCreated, 10, 0); created != 0 && err == nil {
+					t := time.Unix(created, 0)
+					os.Chtimes(fileName, t, t)
+				}
+			}
+
+			return nil
 		}
 		if int64(i) >= retryTimes {
 			return ObjectError{err, bucket.BucketName, objectName}
