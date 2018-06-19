@@ -108,13 +108,13 @@ var specChineseCopy = SpecText{
 
 	paramText: "src_url dest_url [options]",
 
-	syntaxText: ` 
-    ossutil cp file_url cloud_url  [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] [--snapshot-path=sdir] 
-    ossutil cp cloud_url file_url  [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] [--range=x-y] 
-    ossutil cp cloud_url cloud_url [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] 
+	syntaxText: `
+    ossutil cp file_url cloud_url  [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] [--snapshot-path=sdir]
+    ossutil cp cloud_url file_url  [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] [--range=x-y]
+    ossutil cp cloud_url cloud_url [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir]
 `,
 
-	detailHelpText: ` 
+	detailHelpText: `
     该命令允许：从本地文件系统上传文件到oss，从oss下载object到本地文件系统，在oss
     上进行object拷贝。分别对应下述三种操作：
         ossutil cp file_url oss://bucket[/prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] [--snapshot-path=sdir]
@@ -193,11 +193,11 @@ var specChineseCopy = SpecText{
 
     该选项在上传文件的同时设置object的meta信息。当指定--recursive选项时，会设置所有上传的
     objects的meta信息。
-	
+
     可选的header列表如下：
         ` + formatHeaderString(headerOptionMap, "\n        ") + `
         以及以` + oss.HTTPHeaderOssMetaPrefix + `开头的header
-    	
+
     注意：header不区分大小写，但value区分大小写。设置后将用指定的meta代替原来的meta。没有指定的
     HTTP HEADER将保留，没有指定的user meta将会被删除。
 
@@ -212,7 +212,7 @@ var specChineseCopy = SpecText{
     acl的详细信息请参见：https://help.aliyun.com/document_detail/31867.html
 
 --output-dir选项
-    
+
     该选项指定ossutil输出文件存放的目录，默认为：当前目录下的` + DefaultOutputDir + `目录。如果指定
     的目录不存在，ossutil会自动创建该目录，如果用户指定的路径已存在并且不是目录，会报错。
     输出文件表示ossutil在运行过程中产生的输出文件，目前包含：在cp命令中ossutil运行出错时
@@ -222,7 +222,7 @@ var specChineseCopy = SpecText{
 增量上传/下载/拷贝：
 
 --update选项（-u）
-    
+
     如果指定了该选项，ossutil只有当目标文件（或object）不存在，或源文件（或object）新于
     目标文件（或object）时，才执行上传、下载、拷贝。当指定了该选项时，无论--force选项是
     否指定了，在目标文件存在时，ossutil都不会提示，直接采取上述策略。
@@ -257,7 +257,7 @@ var specChineseCopy = SpecText{
     另外，增量下载策略不会考虑--range选项的值，即增量下载策略只参考文件是否存在和lastModifiedTime
     信息来决定，即如果满足跳过下载的条件，就算两次下载指定的range不一样，也同样会跳过文件。
     所以请避免两者共同使用！
-    
+
 
 其他选项：
 
@@ -278,7 +278,7 @@ var specChineseCopy = SpecText{
     指定--range=-9，表示下载指定文件结尾的9个字符。
     如果指定的范围超过文件长度范围，会下载整个文件。
     关于range的更多信息见：https://help.aliyun.com/document_detail/31980.html?spm=5176.doc31994.6.860.YH7LL1
-    
+
     如果想下载整个文件请不要指定这个选项。
     目前上传和拷贝文件，不支持--range选项。
 
@@ -332,11 +332,11 @@ var specChineseCopy = SpecText{
     产生EOF错误，这个时候请适当降低--jobs选项和--parallel选项值。
 
 --part-size选项
-    
+
     该选项设置大文件分片上传/下载/拷贝时，每个分片的大小。默认情况下，不需要设置该值，ossutil
     会根据文件大小自行决定分片大小和分片并发，当用户上传/下载/拷贝性能达不到需求时，或有其他
     特殊需求时，可以设置这些选项。
-    
+
     如果设置了该选项（分片大小），分片个数为：向上取整（文件大小/分片大小），注意如果--parallel
     选项值大于分片个数，则多余的parallel不起作用，实际的并发数为分片个数。
 
@@ -392,7 +392,7 @@ var specChineseCopy = SpecText{
     注意：对于以/结尾且大小为0的object，会在本地文件系统创建一个目录，而不是尝试创建一个文件。
     对于其他object会尝试创建文件。
 
-    3) ossutil cp oss://src_bucket[/src_prefix] oss://dest_bucket[/dest_prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] 
+    3) ossutil cp oss://src_bucket[/src_prefix] oss://dest_bucket[/dest_prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file]
         该用法在oss间进行object的拷贝。其中src_bucket与dest_bucket可以相同，注意，当src_url与
     dest_url完全相同时，ossutil不会做任何事情，直接提示退出。设置meta请使用set-meta命令。如果未
     指定--recursive选项，则认为src_url精确指定了待拷贝的单个object，此时不支持prefix匹配，如果
@@ -409,10 +409,10 @@ var specChineseCopy = SpecText{
     以上三种用法中如果指定了--recursive选项，均可以使用--include或--exclude选项使用通配符的方式过滤要操作的文件。
 `,
 
-	sampleText: ` 
+	sampleText: `
     1) 上传文件到oss
     假设本地local_dir目录中有文件a，b，目录c和d，目录c为空，目录d中包含文件dd。
-    
+
     ossutil cp local_dir/a oss://bucket1
     生成：
         oss://bucket1/a
@@ -440,7 +440,7 @@ var specChineseCopy = SpecText{
     如果某文件上传发生服务器内部错误等失败，会在当前目录下的ossutil_output目录中产生report文件
     记录错误信息，并尝试其他文件的上传操作。
 
-    ossutil cp local_dir oss://bucket1/b -r --output-dir=your_dir 
+    ossutil cp local_dir oss://bucket1/b -r --output-dir=your_dir
     如果某文件上传发生服务器内部错误等失败，会在your_dir中产生report文件记录错误信息，并尝试其
     他文件的上传操作。
 
@@ -469,7 +469,7 @@ var specChineseCopy = SpecText{
     生成文件b
 
     ossutil cp oss://bucket/abcdir1/a b --update
-    如果文件b已存在，且更新时间不晚于oss://bucket/abcdir1/a，则跳过本次操作。    
+    如果文件b已存在，且更新时间不晚于oss://bucket/abcdir1/a，则跳过本次操作。
 
     ossutil cp oss://bucket/abcdir1/a b/
     在目录b下生成文件a
@@ -485,7 +485,7 @@ var specChineseCopy = SpecText{
     报错，object不存在。
 
     ossutil cp oss://bucket/abc b -r
-    如果b为已存在文件，报错    
+    如果b为已存在文件，报错
     否则在目录b下生成目录abcdir1和abcdir2，
         目录abcdir1中生成文件a，b，c
         目录abcdir2中生成目录a和b，目录b中生成文件e
@@ -494,10 +494,10 @@ var specChineseCopy = SpecText{
     如果某文件下载发生服务器内部错误等失败，会在当前目录下的ossutil_output目录中产生report文件
     记录错误信息，并尝试其他文件的下载操作。
 
-    ossutil cp oss://bucket/ local_dir -r --output-dir=your_dir 
+    ossutil cp oss://bucket/ local_dir -r --output-dir=your_dir
     如果某文件下载发生服务器内部错误等失败，会在your_dir中产生report文件记录错误信息，并尝试其
     他文件的下载操作。
-        
+
     ossutil cp oss://bucket/ local_dir -r -u
     使用--update策略进行增量下载
 
@@ -520,15 +520,15 @@ var specChineseCopy = SpecText{
     生成:
         oss://bucket1/b
 
-    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/ 
+    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/
     生成:
         oss://bucket/abcdir1/a/a
 
-    ossutil cp oss://bucket/abcdir1/a/ oss://bucket/abcdir1/b/ 
+    ossutil cp oss://bucket/abcdir1/a/ oss://bucket/abcdir1/b/
     生成：
         oss://bucket/abcdir1/b/a/
 
-    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/ -r 
+    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/ -r
     报错，递归拷贝
 
     ossutil cp oss://bucket/abcdir1/a oss://bucket1/b/
@@ -561,7 +561,7 @@ var specChineseCopy = SpecText{
     如果某文件拷贝发生服务器内部错误等失败，会在当前目录下的ossutil_output目录中产生report文件
     记录错误信息，并尝试其他文件的拷贝操作。
 
-    ossutil cp oss://bucket/ oss://bucket1/ -r --output-dir=your_dir 
+    ossutil cp oss://bucket/ oss://bucket1/ -r --output-dir=your_dir
     如果某文件拷贝发生服务器内部错误等失败，会在your_dir中产生report文件记录错误文件的信息，并
     尝试其他文件的拷贝操作。
 
@@ -579,66 +579,66 @@ var specEnglishCopy = SpecText{
 
 	paramText: "src_url dest_url [options]",
 
-	syntaxText: ` 
+	syntaxText: `
     ossutil cp file_url cloud_url  [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] [--snapshot-path=sdir]
-    ossutil cp cloud_url file_url  [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] [--range=x-y] 
-    ossutil cp cloud_url cloud_url [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] 
+    ossutil cp cloud_url file_url  [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir] [--range=x-y]
+    ossutil cp cloud_url cloud_url [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=cdir]
 `,
 
-	detailHelpText: ` 
-    The command allows: 
-    1. Upload file from local file system to oss 
+	detailHelpText: `
+    The command allows:
+    1. Upload file from local file system to oss
     2. Download object from oss to local file system
     3. Copy objects between oss
     Which matches with the following three kinds of operations:
         ossutil cp file_url oss://bucket[/prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] [--snapshot-path=sdir]
         ossutil cp oss://bucket[/prefix] file_url [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] [--range=x-y]
-        ossutil cp oss://src_bucket[/src_prefix] oss://dest_bucket[/dest_prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] 
+        ossutil cp oss://src_bucket[/src_prefix] oss://dest_bucket[/dest_prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file]
 
-    file_url means the file in local file system, it supports relative path and absolute 
-    path, the usage of file_url is same with your local file system. oss://bucket[/prefix] 
+    file_url means the file in local file system, it supports relative path and absolute
+    path, the usage of file_url is same with your local file system. oss://bucket[/prefix]
     means object in oss, it supports prefix matching, but not support wildcard.
 
-    ossutil sperate file of local system and oss objects by the prefix of oss://, which means 
-    if the url starts with oss://, ossutil considers it as object, else, ossutil considers it 
-    as file in local system. 
+    ossutil sperate file of local system and oss objects by the prefix of oss://, which means
+    if the url starts with oss://, ossutil considers it as object, else, ossutil considers it
+    as file in local system.
 
-    Note: when copy between oss, ossutil only support copy objects, the uncompleted Multipart 
+    Note: when copy between oss, ossutil only support copy objects, the uncompleted Multipart
     Uploads are not supported.
 
 
 --recursive option:
 
-    (1) Upload file to oss: if file_url is directory, the --recursive option must be specified. 
+    (1) Upload file to oss: if file_url is directory, the --recursive option must be specified.
 
     (2) When download objects or copy objects between oss:
-        If --recursive option is not specified, ossutil download or copy the specified single 
-    object, in the usage, please make sure url exactly specified the object you want to set meta 
-    on, if object not exist, error occurs. 
-        If --recursive option is specified, ossutil will search for prefix-matching objects and 
-    download or copy these objects. If error occurs, objects which has been download or copyed 
-    will not rollback. 
+        If --recursive option is not specified, ossutil download or copy the specified single
+    object, in the usage, please make sure url exactly specified the object you want to set meta
+    on, if object not exist, error occurs.
+        If --recursive option is specified, ossutil will search for prefix-matching objects and
+    download or copy these objects. If error occurs, objects which has been download or copyed
+    will not rollback.
 
-    By default, if an error occurs to a file in batch upload(/download/copy) files operation, 
-    ossutil will continue to attempt to copy the remaining files, and ossutil will record the 
-    error message to report file. The files succeed copied will not be recorded to report file.   
+    By default, if an error occurs to a file in batch upload(/download/copy) files operation,
+    ossutil will continue to attempt to copy the remaining files, and ossutil will record the
+    error message to report file. The files succeed copied will not be recorded to report file.
 
-    Note: Ossutil will print error information and exit, instead of continue to run if an error 
+    Note: Ossutil will print error information and exit, instead of continue to run if an error
     occurs in batch upload(/download/copy) files operation in several situations:
-    (1) If the error occurs before of entering the upload(/download/copy) iteration, ossutil will 
-        print error message and return, and the report file will not be generated. eg. user enter 
+    (1) If the error occurs before of entering the upload(/download/copy) iteration, ossutil will
+        print error message and return, and the report file will not be generated. eg. user enter
         an invalid cp command.
-    (2) If the error occurs during upload(/download/copy) iteration is: NoSuchBucket, AccessDenied 
-        caused by unauthorized authentication and other errors. ossutil will print error message 
+    (2) If the error occurs during upload(/download/copy) iteration is: NoSuchBucket, AccessDenied
+        caused by unauthorized authentication and other errors. ossutil will print error message
         and return, the report file that has been generated will not be deleted.
 
-    Report file name is: ` + ReportPrefix + `Date_Time` + ReportSuffix + `. Report file is one kind 
-    of output files, and will be putted in output directory, the directory can be specified by 
-    --output-dir option or outputDir option in config file. If it's not specified, ossutil will use 
+    Report file name is: ` + ReportPrefix + `Date_Time` + ReportSuffix + `. Report file is one kind
+    of output files, and will be putted in output directory, the directory can be specified by
+    --output-dir option or outputDir option in config file. If it's not specified, ossutil will use
     the default directory: ` + DefaultOutputDir + ` in current directory.
 
-    Note: ossutil will not mainten the report file, please check and clear your output directory 
-    regularlly to avoid too many report files in your output directory. 
+    Note: ossutil will not mainten the report file, please check and clear your output directory
+    regularlly to avoid too many report files in your output directory.
 
 --include and --exclude option:
 
@@ -650,11 +650,11 @@ var specEnglishCopy = SpecText{
     ?: Matches any single character
     [sequence]: Matches any character in sequence
     [!sequence]: Matches any character not in sequence
-    Note: does not support patterns containing directory info. e.g., --include "/usr/*/test/*.jpg" 
+    Note: does not support patterns containing directory info. e.g., --include "/usr/*/test/*.jpg"
 
     Any number of these parameters can be passed to a command. You can do this by providing an --exclude
     or --include argument multiple times, e.g.,
-      --include "*.txt" --include "*.png". 
+      --include "*.txt" --include "*.png".
     When there are multi filters, the rule is the filters that appear later in the command take precedence
     over filters that appear earlier in the command. e.g.,
 
@@ -683,8 +683,8 @@ var specEnglishCopy = SpecText{
 
 --meta option
 
-    This option will set the specified objects' meta data. If --recursive option is specified, 
-    ossutil will set meta for all uploaded objects.  
+    This option will set the specified objects' meta data. If --recursive option is specified,
+    ossutil will set meta for all uploaded objects.
 
     ossutil supports following headers:
         ` + formatHeaderString(headerOptionMap, "\n        ") + `
@@ -696,8 +696,8 @@ var specEnglishCopy = SpecText{
 
 --acl option
 
-    This option will set acl on the specified objects. If --recursive option is specified, 
-    ossutil will set acl for all uploaded objects.  
+    This option will set acl on the specified objects. If --recursive option is specified,
+    ossutil will set acl for all uploaded objects.
 
     ossutil support following objet acls:
         ` + formatACLString(objectACL, "\n        ") + `
@@ -705,13 +705,13 @@ var specEnglishCopy = SpecText{
     More information about acl see ACL Control in https://help.aliyun.com/document_detail/31867.html?spm=5176.doc31960.6.147.8dVwsh.
 
 --output-dir option
-    
-    The option specify the directory to deposit output file generated by ossutil, the default value 
-    is: ` + DefaultOutputDir + ` in current directory. If the directory specified not exist, ossutil will 
-    create the directory automatically, if it exists but is not a directory, ossutil will return an 
-    error.  
 
-    Output file contains: report file which used to record error message generated by cp command, 
+    The option specify the directory to deposit output file generated by ossutil, the default value
+    is: ` + DefaultOutputDir + ` in current directory. If the directory specified not exist, ossutil will
+    create the directory automatically, if it exists but is not a directory, ossutil will return an
+    error.
+
+    Output file contains: report file which used to record error message generated by cp command,
     set-acl, set-meta, restore command.
 
 
@@ -719,49 +719,49 @@ Incremental Upload/Download/Copy:
 
 --update option(-u)
 
-    Use the --update option to copy only when the source file is newer than the destination file 
-    when the destination file is missing. If --update option is specified, when the destionation 
-    file is existed, ossutil will not prompt and copy when newer, no matter if --force option is 
+    Use the --update option to copy only when the source file is newer than the destination file
+    when the destination file is missing. If --update option is specified, when the destionation
+    file is existed, ossutil will not prompt and copy when newer, no matter if --force option is
     specified or not.
     The option can be used when batch copy failed, skip the succeed files in retry.
 
 --snapshot-path option
 
     This option is used to accelerate the incremental upload of batch files in certain scenarios(
-    currently, download and copy do not support this option). The scenarios is: lots of files and 
+    currently, download and copy do not support this option). The scenarios is: lots of files and
     no other user updated the corresponding object in oss during the two uploads.
-    
-    If you use the option when batch copy files, ossutil will generate files to record the snapshot 
-    information in the specified directory. When the next time you upload files with the option, 
-    ossutil will read the snapshot information under the specified directory for incremental upload. 
-    The snapshot-path you specified must be a local file system directory can be written in, if the 
-    directory does not exist, ossutil creates the files for recording snapshot information, else 
-    ossutil will read snapshot information from the directory for incremental upload(ossutil will 
-    only upload the files which has not been successfully upload to oss and the files has been locally 
-    modified), and update the snapshot information to the directory. 
-    
-    Note: 
-    (1) The option record the lastModifiedTime of local files which has been successfully upload in 
-        local file system, and compare the lastModifiedTime of local files in the next cp to decided 
-        whether to skip the upload of the files, so if you use the option to achieve incremental upload, 
-        please make sure no other user updated the corresponding object in oss during the two uploads. 
-        If you can not guarantee the scenarios, please use --update option to achieve incremental upload. 
-    (2) Ossutil does not automatically delete snapshot-path snapshot information, in order to avoid too 
-        much snapshot information, when the snapshot information is useless, please clean up your own 
-        snapshot-path on your own.
-    (3) Due to the extra cost of reading and writing snapshot information, if the file num is not very big, 
-        or the network condition is good, or there may be some other users to modify the corresponding 
-        object in oss during the two uploads, it's not suggested to use the option. you can use --update 
-        option for incremental upload. 
 
-Note: --update option and --snapshot-path can be used together, ossutil priority will be based on snapshot 
-    information to determine whether to skip upload, if not satisfied, ossutil will then based on --update 
-    to determine whether to skip upload. If any of those two policies is specified, ossutil will ingnore 
-    --force option, which means whether or not the destionation file exists, ossutil will not ask user 
+    If you use the option when batch copy files, ossutil will generate files to record the snapshot
+    information in the specified directory. When the next time you upload files with the option,
+    ossutil will read the snapshot information under the specified directory for incremental upload.
+    The snapshot-path you specified must be a local file system directory can be written in, if the
+    directory does not exist, ossutil creates the files for recording snapshot information, else
+    ossutil will read snapshot information from the directory for incremental upload(ossutil will
+    only upload the files which has not been successfully upload to oss and the files has been locally
+    modified), and update the snapshot information to the directory.
+
+    Note:
+    (1) The option record the lastModifiedTime of local files which has been successfully upload in
+        local file system, and compare the lastModifiedTime of local files in the next cp to decided
+        whether to skip the upload of the files, so if you use the option to achieve incremental upload,
+        please make sure no other user updated the corresponding object in oss during the two uploads.
+        If you can not guarantee the scenarios, please use --update option to achieve incremental upload.
+    (2) Ossutil does not automatically delete snapshot-path snapshot information, in order to avoid too
+        much snapshot information, when the snapshot information is useless, please clean up your own
+        snapshot-path on your own.
+    (3) Due to the extra cost of reading and writing snapshot information, if the file num is not very big,
+        or the network condition is good, or there may be some other users to modify the corresponding
+        object in oss during the two uploads, it's not suggested to use the option. you can use --update
+        option for incremental upload.
+
+Note: --update option and --snapshot-path can be used together, ossutil priority will be based on snapshot
+    information to determine whether to skip upload, if not satisfied, ossutil will then based on --update
+    to determine whether to skip upload. If any of those two policies is specified, ossutil will ingnore
+    --force option, which means whether or not the destionation file exists, ossutil will not ask user
     whether to replace the file, and determine whether to upload according to incremental upload policies.
 
-    Incremental download will not consider the value of --range option, and only consider whether file 
-    exists and lastModifiedTime. Which means even if the range changs between two download, ossutil will 
+    Incremental download will not consider the value of --range option, and only consider whether file
+    exists and lastModifiedTime. Which means even if the range changs between two download, ossutil will
     skip the files which satisfy the incremental download condition, so, please avoid to use both!
 
 
@@ -769,17 +769,17 @@ Other Options:
 
 --force option
 
-    If the file dest_url specified is existed, and --update and --snapshot-path option is not specified, 
-    ossutil will ask if replace the file(if the input is invalid, the file will not be replaced). If 
-    --force option is specified here, ossutil will not prompt, replace by force. The option is useful 
-    only when --update and --snapshot-path option is not specified. 
+    If the file dest_url specified is existed, and --update and --snapshot-path option is not specified,
+    ossutil will ask if replace the file(if the input is invalid, the file will not be replaced). If
+    --force option is specified here, ossutil will not prompt, replace by force. The option is useful
+    only when --update and --snapshot-path option is not specified.
 
 --range option
-    
-    If user need to range download a file, we can use --range option, if we use the option, then 
+
+    If user need to range download a file, we can use --range option, if we use the option, then
     resume copy of big file and multi-thread copy is ineffective.
-    
-    The offset of file is start 
+
+    The offset of file is start
     with 0, there are three forms: 0-9 or 3- or -9.
         eg: --range=0-9, means download the first to the tenth character of the file.
         --range=3-, means download the fourth character to the end of the file.
@@ -788,43 +788,43 @@ Other Options:
     More information about range see: https://help.aliyun.com/document_detail/31980.html?spm=5176.doc31994.6.860.YH7LL1
 
     If you need to download the whole file, please do not specify the option.
-    The option is not supported for upload and copy files. 
+    The option is not supported for upload and copy files.
 
-    Note: Incremental download(-u option) will not conside --range option. Which means even if the 
-    range changs between two download, ossutil will skip the files which satisfy the incremental 
+    Note: Incremental download(-u option) will not conside --range option. Which means even if the
+    range changs between two download, ossutil will skip the files which satisfy the incremental
     download condition, so, please avoid to use both!
 
 --encoding-type option
-    
-    If the --encoding-type option is setted to url, it means the object name and file name are url 
+
+    If the --encoding-type option is setted to url, it means the object name and file name are url
     endcoded.
 
 
 Resume copy of big file:
 
-    If the size of source file is bigger than what --bigfile-threshold option specified(default: 
+    If the size of source file is bigger than what --bigfile-threshold option specified(default:
     100M), ossutil will consider the file as a big file, and use resume copy policy to these files:
-    (1) Upload file to oss: ossutil will split the big file to many parts, use multipart upload. If 
-        upload is failed, ossutil will record failure information in .ossutil_checkpoint directory 
-        in local file system. When retry, ossutil will read the checkpoint information and resume 
-        upload, if the upload is succeed, ossutil will remove the .ossutil_checkpoint directory. 
-    (2) Download object from oss: ossutil will split the big file to many parts, range get each part. 
-        If download is failed, ossutil wll record failure information in .ossutil_checkpoint directory 
+    (1) Upload file to oss: ossutil will split the big file to many parts, use multipart upload. If
+        upload is failed, ossutil will record failure information in .ossutil_checkpoint directory
+        in local file system. When retry, ossutil will read the checkpoint information and resume
+        upload, if the upload is succeed, ossutil will remove the .ossutil_checkpoint directory.
+    (2) Download object from oss: ossutil will split the big file to many parts, range get each part.
+        If download is failed, ossutil wll record failure information in .ossutil_checkpoint directory
         in local file system. If success, ossutil will remove the directory.
-    (3) Copy between oss: ossutil will split the big file to many parts, use Upload Part Copy, and 
-        record failure information in .ossutil_checkpoint directory in local file system. If success, 
+    (3) Copy between oss: ossutil will split the big file to many parts, use Upload Part Copy, and
+        record failure information in .ossutil_checkpoint directory in local file system. If success,
         ossutil will remove the directory.
 
     Warning:
-    1) Resume copy will not be implemented on small file, if failure happens, ossutil will copy the 
+    1) Resume copy will not be implemented on small file, if failure happens, ossutil will copy the
         whole file the next time.
-    2) In operation (1) and (3), if failure happens, uploadId that has not been completed may appear in 
-        oss. If the operation success after retry, these uploadId will be completed automatically. 
-    3) When upload file to oss, if .ossutil_checkpoint directory is included in file_url, .ossutil_checkpoint 
-        will not be uploaded to oss. The path of checkpoint directory can be specified by --checkpoint-dir 
+    2) In operation (1) and (3), if failure happens, uploadId that has not been completed may appear in
+        oss. If the operation success after retry, these uploadId will be completed automatically.
+    3) When upload file to oss, if .ossutil_checkpoint directory is included in file_url, .ossutil_checkpoint
+        will not be uploaded to oss. The path of checkpoint directory can be specified by --checkpoint-dir
         option, please make sure the directory you specified can be removed.
-    4) If you remove the uncompleted multipart upload tasks by rm command, may cause resume upload/download/copy 
-        fail the next time(Error: NoSuchUpload). If you want to reupload/download/copy the entire file again, 
+    4) If you remove the uncompleted multipart upload tasks by rm command, may cause resume upload/download/copy
+        fail the next time(Error: NoSuchUpload). If you want to reupload/download/copy the entire file again,
         please remove the checkpoint file in checkpoint directory.
 
 
@@ -832,37 +832,37 @@ Performance Tuning:
 
 --jobs option or --parallel option (Concurrency Control)
 
-    --jobs option controls the amount of concurrency tasks between multi-files, --parallel option controls 
-    the amount of concurrency tasks when work with a file. In default situation, ossutil will calculate the 
-    parallel num according to file size(the option is useless to small file, the file size to use multipart 
-    upload can be specified by --bigfile-threshold option). When batch upload/download/copy files, the total 
-    concurrency tasks num is jobs num multiply by parallel num. The two option can be specified by user, if 
-    the performance of default setting is poor, user can adjust the two options. 
+    --jobs option controls the amount of concurrency tasks between multi-files, --parallel option controls
+    the amount of concurrency tasks when work with a file. In default situation, ossutil will calculate the
+    parallel num according to file size(the option is useless to small file, the file size to use multipart
+    upload can be specified by --bigfile-threshold option). When batch upload/download/copy files, the total
+    concurrency tasks num is jobs num multiply by parallel num. The two option can be specified by user, if
+    the performance of default setting is poor, user can adjust the two options.
 
     Note:
-    1) If the parallels and jobs number are too big, because of the switching between threads, the performance 
-    of upload/download/copy may decline, so please set the options according to your machine condition. If need 
-    performance tuning, user can set the two options to two small numbers at first and increase them step by step. 
-    2) If the parallels and jobs number are too big, in the case of limited machine resources, error "EOF" may 
-    occur due to the network transfer too slow, in this situation, please reduce the --jobs and --parallel num. 
+    1) If the parallels and jobs number are too big, because of the switching between threads, the performance
+    of upload/download/copy may decline, so please set the options according to your machine condition. If need
+    performance tuning, user can set the two options to two small numbers at first and increase them step by step.
+    2) If the parallels and jobs number are too big, in the case of limited machine resources, error "EOF" may
+    occur due to the network transfer too slow, in this situation, please reduce the --jobs and --parallel num.
 
 --part-size option
 
-    The option specify the part size of resume upload/download/copy of big file. In default situation, ossutil 
-    will calculate the part size and parallel according to file size. When performance tuning or some other needs, 
-    user can set the option.     
+    The option specify the part size of resume upload/download/copy of big file. In default situation, ossutil
+    will calculate the part size and parallel according to file size. When performance tuning or some other needs,
+    user can set the option.
 
-    If the option is specified, part num is: ceil(file size/part size). Note that if --parallel value is bigger 
+    If the option is specified, part num is: ceil(file size/part size). Note that if --parallel value is bigger
     than part num, the extra parallel is feeble, the actual parallel will be part num.
 
-    If the part size is too small, it may influence ossutil file upload/download/copy performance, if the part 
-    size is too big, it may influence the actual parallel num, so, please if specify the option, please set it 
-    to a reasonable value. 
+    If the part size is too small, it may influence ossutil file upload/download/copy performance, if the part
+    size is too big, it may influence the actual parallel num, so, please if specify the option, please set it
+    to a reasonable value.
 
 
 Batch file migration:
 
-    ossutil support batch file migration by transfer files through local file system, the usual usage is: 
+    ossutil support batch file migration by transfer files through local file system, the usual usage is:
     (1) Batch file upload:
         ossutil cp your_dir oss://your_bucket -r -f -u
     (2) Batch file download:
@@ -873,10 +873,10 @@ Batch file migration:
     The meaning of every option, see help above.
     After each migration, please check your report file.
 
-    When batch file upload, if the file num is big and no other user modified the corresponding object in 
-    oss during the two uploads, you can use --snapshot-path to accelerate the incremental upload, see more 
-    information in help text of --snapshot-path option above. 
-    The command is: 
+    When batch file upload, if the file num is big and no other user modified the corresponding object in
+    oss during the two uploads, you can use --snapshot-path to accelerate the incremental upload, see more
+    information in help text of --snapshot-path option above.
+    The command is:
         ossutil cp your_dir oss://your_bucket -r -f -u --shapshot-path=your-path
 
 
@@ -885,52 +885,52 @@ Usage:
     There are three usages:
 
     1) ossutil cp file_url oss://bucket[/prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] [--snapshot-path=sdir]
-        The usage upload file in local system to oss. file_url can be file or directory. If file_url 
-    is file, no matter --recursive option is specified or not will not affect the result. If file_url 
-    is directory, even if the directory is empty or only contains one file, we must specify --recursive 
-    option. Mind that, ossutil will upload all sub files and directories(include empty directory) inside 
-    file_url to oss, but differe from shell cp, the first level directory specified by file_url will not 
-    be upload to oss. 
+        The usage upload file in local system to oss. file_url can be file or directory. If file_url
+    is file, no matter --recursive option is specified or not will not affect the result. If file_url
+    is directory, even if the directory is empty or only contains one file, we must specify --recursive
+    option. Mind that, ossutil will upload all sub files and directories(include empty directory) inside
+    file_url to oss, but differe from shell cp, the first level directory specified by file_url will not
+    be upload to oss.
     Object Naming Rules:
         If file_url is file: if prefix is empty or end with "/", object name is: dest_url + file name.
                              else, object name is: dest_url.
         If file_url is directory: if prefix is empty or end with "/", object name is: dest_url + file path relative to file_url.
-        
-    2) ossutil cp oss://bucket[/prefix] file_url [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] [--range=x-y] 
-        The usage download one or many objects to local system. If --recursive option is not specified, 
-    ossutil considers src_url exactly specified the single object you want to download, prefix-matching 
-    is not supported now, if the object not exists, error occurs. If --recursive option is specified, 
-    ossutil will search for prefix-matching objects and batch download those objects, at this time file_url 
+
+    2) ossutil cp oss://bucket[/prefix] file_url [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] [--range=x-y]
+        The usage download one or many objects to local system. If --recursive option is not specified,
+    ossutil considers src_url exactly specified the single object you want to download, prefix-matching
+    is not supported now, if the object not exists, error occurs. If --recursive option is specified,
+    ossutil will search for prefix-matching objects and batch download those objects, at this time file_url
     must be directory, if the directory not exists, ossutil will create the directory automatically.
     File Naming Rules:
         If file_url is file, ossutil download file to the path of file_url, and the file name is got from file_url.
         If file_url is directory, ossutil download file to the directory, and the file name is: object name.
-    Warning: If the object name is end with / and size is zero, ossutil will create a directory in local 
+    Warning: If the object name is end with / and size is zero, ossutil will create a directory in local
     system, instead of creating a file.
 
-    3) ossutil cp oss://src_bucket[/src_prefix] oss://dest_bucket[/dest_prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file] 
-        The usage copy objects between oss. The src_bucket can be same with dest_bucket. Pay attention 
-    please, if src_url is the same with dest_url, ossutil will do nothing but exit after prompt. Set meta 
-    please use "set-meta" command. If --recursive option is not specified, ossutil considers src_url exactly 
-    specified the single object you want to copy. If --recursive option is specified, ossutil will search 
-    for prefix-matching objects and batch copy those objects. 
+    3) ossutil cp oss://src_bucket[/src_prefix] oss://dest_bucket[/dest_prefix] [-r] [-f] [-u] [--output-dir=odir] [--bigfile-threshold=size] [--checkpoint-dir=file]
+        The usage copy objects between oss. The src_bucket can be same with dest_bucket. Pay attention
+    please, if src_url is the same with dest_url, ossutil will do nothing but exit after prompt. Set meta
+    please use "set-meta" command. If --recursive option is not specified, ossutil considers src_url exactly
+    specified the single object you want to copy. If --recursive option is specified, ossutil will search
+    for prefix-matching objects and batch copy those objects.
 
-    Warning: when batch copy, it's not allowed that src_url is the prefix of dest_url, because recursivlly 
-    copy will happen under the situation. dest_ur is the prefix of src_url is not allowed too, because of 
+    Warning: when batch copy, it's not allowed that src_url is the prefix of dest_url, because recursivlly
+    copy will happen under the situation. dest_ur is the prefix of src_url is not allowed too, because of
     covering source file. But they are allowed in single file copy.
 
     Object Naming Rules:
-        If src_url is one object: if prefix of dest_object is empty or end with "/", object name is: dest_url + object name exclude parenet directory path. 
+        If src_url is one object: if prefix of dest_object is empty or end with "/", object name is: dest_url + object name exclude parenet directory path.
                                   else, object name is: dest_url.
         If src_url means multiple objects: object name is: dest_url+ source object name exclude src_prefix.
 `,
 
-	sampleText: ` 
+	sampleText: `
     1) Upload to oss
-    Suppose there are directory local_dir in local system, 
-        local_dir contains file a, b directory c, d, 
+    Suppose there are directory local_dir in local system,
+        local_dir contains file a, b directory c, d,
         c is empty, d contains file dd.
-    
+
     ossutil cp local_dir/a oss://bucket1
     Generate:
         oss://bucket1/a
@@ -955,12 +955,12 @@ Usage:
         oss://bucket1/b/d/dd
 
     ossutil cp local_dir oss://bucket1/b -r
-    If an 5xx error occurs while upload a file, ossutil will generate a report file and record the error 
-    information to the file, and store the file in ossutil_output directory in current path, and continue 
+    If an 5xx error occurs while upload a file, ossutil will generate a report file and record the error
+    information to the file, and store the file in ossutil_output directory in current path, and continue
     to upload the remaining files.
 
-    ossutil cp local_dir oss://bucket1/b -r --output-dir=your_dir 
-    If an 5xx error occurs while upload a file, ossutil will generate a report file and record the error 
+    ossutil cp local_dir oss://bucket1/b -r --output-dir=your_dir
+    If an 5xx error occurs while upload a file, ossutil will generate a report file and record the error
     information to the file, and store the file in your_dir, and continue to upload the remaining files.
 
     ossutil cp local_dir oss://bucket1/b -r -u
@@ -982,7 +982,7 @@ Usage:
         oss://bucket/abcdir1/c
         oss://bucket/abcdir2/a/
         oss://bucket/abcdir2/b/e
-    And size of oss://bucket/abcdir2/a/ is zero. 
+    And size of oss://bucket/abcdir2/a/ is zero.
 
     ossutil cp oss://bucket/abcdir1/a b
     Generate file b
@@ -1005,23 +1005,23 @@ Usage:
     Else generate directory dir1, dir2,
         generate file a, b, c in dir1,
         generate directory a, b in dir2, generate file e in directory b.
-        
+
     ossutil cp oss://bucket/ local_dir -r
-    If an 5xx error occurs while download a file, ossutil will generate a report file and record the error 
-    information to the file, and store the file in ossutil_output directory in current path, and continue 
+    If an 5xx error occurs while download a file, ossutil will generate a report file and record the error
+    information to the file, and store the file in ossutil_output directory in current path, and continue
     to download the remaining files.
 
     ossutil cp oss://bucket/ local_dir -r --output-dir=your_dir
-    If an 5xx error occurs while download a file, ossutil will generate a report file and record the error 
+    If an 5xx error occurs while download a file, ossutil will generate a report file and record the error
     information to the file, and store the file in your_dir, and download to upload the remaining files.
 
     ossutil cp oss://bucket/ local_dir -r -u
     Use --update policy for incremental download
 
     ossutil cp oss://bucket1/%e6%b5%8b%e8%af%95 %e4%b8%ad%e6%96%87 --encoding-type url
-    Download oss://bucket1/测试 to local file：中文 
+    Download oss://bucket1/测试 to local file：中文
 
-    3) Copy between oss 
+    3) Copy between oss
     Suppose there are following objects in oss:
         oss://bucket/abcdir1/a
         oss://bucket/abcdir1/b
@@ -1037,15 +1037,15 @@ Usage:
     Generate:
         oss://bucket1/b
 
-    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/ 
+    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/
     Generate:
         oss://bucket/abcdir1/a/a
 
-    ossutil cp oss://bucket/abcdir1/a/ oss://bucket/abcdir1/b/ 
+    ossutil cp oss://bucket/abcdir1/a/ oss://bucket/abcdir1/b/
     Generate:
         oss://bucket/abcdir1/b/a/
 
-    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/ -r 
+    ossutil cp oss://bucket/abcdir1/a oss://bucket/abcdir1/a/ -r
     Error, recursivlly copy
 
     ossutil cp oss://bucket/abcdir1/a oss://bucket1/b/
@@ -1072,12 +1072,12 @@ Usage:
         oss://bucket1/123/dir2/b/e
 
     ossutil cp oss://bucket/ oss://bucket1/ -r
-    If an 5xx error occurs while copy a file, ossutil will generate a report file and record the error 
-    information to the file, and store the file in ossutil_output directory in current path, and continue 
+    If an 5xx error occurs while copy a file, ossutil will generate a report file and record the error
+    information to the file, and store the file in ossutil_output directory in current path, and continue
     to copy the remaining files.
 
-    ossutil cp oss://bucket/ oss://bucket1/ -r --output-dir=your_dir 
-    If an 5xx error occurs while copy a file, ossutil will generate a report file and record the error 
+    ossutil cp oss://bucket/ oss://bucket1/ -r --output-dir=your_dir
+    If an 5xx error occurs while copy a file, ossutil will generate a report file and record the error
     information to the file, and store the file in your_dir, and continue to copy the remaining files.
 
     ossutil cp oss://bucket/ oss://bucket1/ -r -u

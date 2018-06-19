@@ -2,9 +2,10 @@ package lib
 
 import (
 	"fmt"
-	configparser "github.com/alyu/configparser"
 	"os"
 	"strings"
+
+	configparser "github.com/alyu/configparser"
 )
 
 var specChineseConfig = SpecText{
@@ -13,11 +14,11 @@ var specChineseConfig = SpecText{
 
 	paramText: "[options]",
 
-	syntaxText: ` 
-    ossutil config [-e endpoint] [-i id] [-k key] [-t token] [-L language] [--output-dir outdir] [-c file] 
+	syntaxText: `
+    ossutil config [-e endpoint] [-i id] [-k key] [-t token] [-L language] [--output-dir outdir] [-c file]
 `,
 
-	detailHelpText: ` 
+	detailHelpText: `
     该命令创建配置文件，将用户设置的配置项信息存储进该配置文件，配置项用
     以访问OSS时提供访问信息（某命令是否需要配置项，参见其是否支持
     --config-file选项，具体可见该命令的帮助）。
@@ -105,7 +106,7 @@ var specChineseConfig = SpecText{
         选项中寻找该bucket对应的CNAME域名，如果找到，则找到的CNAME域名会覆盖
         Bucket-Endpoint选项和基本配置中的endpoint。运行命令时如果指定了--endpoint
         选项，--endpoint选项为最高优先级。
-        
+
         优先级：--endpoint > Bucket-Cname > Bucket-Endpoint > endpoint > 默认endpoint
 
     2) ossutil config options
@@ -116,7 +117,7 @@ var specChineseConfig = SpecText{
 配置文件格式：
 
     [Credentials]
-        language = CH 
+        language = CH
         endpoint = ` + DefaultEndpoint + `
         accessKeyID = your_key_id
         accessKeySecret = your_key_secret
@@ -132,7 +133,7 @@ var specChineseConfig = SpecText{
         ...
 `,
 
-	sampleText: ` 
+	sampleText: `
     ossutil config
     ossutil config -e oss-cn-hangzhou.aliyuncs.com -c ~/.myconfig
 `,
@@ -144,35 +145,35 @@ var specEnglishConfig = SpecText{
 
 	paramText: "[options]",
 
-	syntaxText: ` 
-    ossutil config [-e endpoint] [-i id] [-k key] [-t token] [-L language] [--output-dir outdir] [-c file] 
+	syntaxText: `
+    ossutil config [-e endpoint] [-i id] [-k key] [-t token] [-L language] [--output-dir outdir] [-c file]
 `,
 
-	detailHelpText: ` 
+	detailHelpText: `
     The command create a configuration file and stores credentials
     information user specified. Credentials information is used when
-    access OSS(if a command supports --config-file option, then the 
+    access OSS(if a command supports --config-file option, then the
     information is useful to the command).
 
     The configuration file can be specified by user, which in default
     is ` + DecideConfigFile("") + `. If the configuration file exist, suppose
-    the file is: a, ossutil will save a as a.bak, and rewrite file a, 
+    the file is: a, ossutil will save a as a.bak, and rewrite file a,
     at this time, if file a.bak exists, a.bak will be rewrited.
 
     Note:
-    (1) If the configuration file path you specified is not the default 
-    path, please specify --config-file option to the path when use other 
-    commands. If you do not specify the --config-file option, ossutil 
+    (1) If the configuration file path you specified is not the default
+    path, please specify --config-file option to the path when use other
+    commands. If you do not specify the --config-file option, ossutil
     will read the configuration file: ` + DecideConfigFile("") + `.
 
-    (2) Several configuration can be specified through option, eg: --endpoint, 
-    --access-key-id etc(for more see the help of each command). If you 
-    specified those options when use command, and meanwhile those configurations 
-    exist in configurations file, PRI: option > configurations file. 
+    (2) Several configuration can be specified through option, eg: --endpoint,
+    --access-key-id etc(for more see the help of each command). If you
+    specified those options when use command, and meanwhile those configurations
+    exist in configurations file, PRI: option > configurations file.
 
-    (3) If you specified --endpoint or --access-key-id or --access-key-secret 
-    or --sts-token option when use command, then ossutil does not insist 
-    on configurations file. 
+    (3) If you specified --endpoint or --access-key-id or --access-key-secret
+    or --sts-token option when use command, then ossutil does not insist
+    on configurations file.
 
 Usage:
 
@@ -184,83 +185,83 @@ Usage:
         The usage provides an interactive way to configure credentials.
     Interactively ossutil asks you for:
         (1) config file
-            If user enter carriage return, ossutil use the default file: 
+            If user enter carriage return, ossutil use the default file:
         ` + DecideConfigFile("") + `.
-            If you specified the config file, please specify --config-file 
-        option to the path when use other command that needs configuration. 
-        To see the commands who support --config-file option please see the 
+            If you specified the config file, please specify --config-file
+        option to the path when use other command that needs configuration.
+        To see the commands who support --config-file option please see the
         help of each command.
         (2) language
-            When configure for the first time(config file not exit), ossutil 
-        will ask user to set the language(support Chinese or English at this 
-        time), if user did not input the language, ossutil will set language 
-        to the value of --language option, if user did not specify --language 
+            When configure for the first time(config file not exit), ossutil
+        will ask user to set the language(support Chinese or English at this
+        time), if user did not input the language, ossutil will set language
+        to the value of --language option, if user did not specify --language
         option, ossutil will set it to Chinese.
-            If config file exists, ossutil will set the language according to 
-        --language option and configuration in config file, instead of asking 
+            If config file exists, ossutil will set the language according to
+        --language option and configuration in config file, instead of asking
         user for it.
-            ossutil will read the language configuration when run command, if 
-        the configuration does not exist or is invalid, ossutil will show in 
+            ossutil will read the language configuration when run command, if
+        the configuration does not exist or is invalid, ossutil will show in
         default language: ` + DefaultLanguage + `.
-            Notice that the configuration will go into effect after the config 
+            Notice that the configuration will go into effect after the config
         command successfully executed, it's dimmed while execute the command.
         (3) endpoint, accessKeyID, accessKeySecret
             Carriage return means skip the configuration of these options.
         Note: Endpoint means a second-level domain(SLD), eg: ` + DefaultEndpoint + `.
             The three options are necessary in normal condition.
         (4) stsToken
-            If you use stsToken to access oss, please enter your stsToken. If not, 
+            If you use stsToken to access oss, please enter your stsToken. If not,
         please enter carriage return to skip the configuration.
             For more information about stsToken, see: https://help.aliyun.com/document_detail/31931.html?spm=5176.doc31867.6.632.hZFNSv
         (5) outputDir
-            The section config the directory to place output file in. The section 
-        can not be configed through interactive mode, but the section in config 
-        file are still effective. 
-            The default directory of outputDir is: ` + DefaultOutputDir + ` in current 
-        directory. ossutil will place all output files generated during running 
-        in this directory. Output files include: report file(generated when error 
-        occurs in cp command while batch upload/downlaod/copy files). 
+            The section config the directory to place output file in. The section
+        can not be configed through interactive mode, but the section in config
+        file are still effective.
+            The default directory of outputDir is: ` + DefaultOutputDir + ` in current
+        directory. ossutil will place all output files generated during running
+        in this directory. Output files include: report file(generated when error
+        occurs in cp command while batch upload/downlaod/copy files).
             More information about report file, see help of cp command.
-            Note: if outputDir is not exist, ossutil will create the directory 
-        automatically, if outputDir you specified exists and is not a directory, 
-        ossutil will return an error. 
+            Note: if outputDir is not exist, ossutil will create the directory
+        automatically, if outputDir you specified exists and is not a directory,
+        ossutil will return an error.
 
-        In interactive config, Bucket-Endpoint and Bucket-Cname is removed, but 
-        the two sections in config file are still effective. 
+        In interactive config, Bucket-Endpoint and Bucket-Cname is removed, but
+        the two sections in config file are still effective.
         (6) Bucket-Endpoint
-            Bucket-Endpoint specify endpoint for every individual bucket, the 
-        section is prior to endpoint in base section.  
-            In current version, Bucket-Endpoint interactive configuration is 
-        removed, but the option in config file is still effective. Note, the 
-        endpoint should be a second-level domain(SLD), eg: ` + DefaultEndpoint + `. 
-            When access a bucket, ossutil will search for endpoint corresponding 
-        to the bucket in this section, if found, the endpoint is prior to the 
-        endpoint in the base section. If --endpoint option is specified, --endpoint 
+            Bucket-Endpoint specify endpoint for every individual bucket, the
+        section is prior to endpoint in base section.
+            In current version, Bucket-Endpoint interactive configuration is
+        removed, but the option in config file is still effective. Note, the
+        endpoint should be a second-level domain(SLD), eg: ` + DefaultEndpoint + `.
+            When access a bucket, ossutil will search for endpoint corresponding
+        to the bucket in this section, if found, the endpoint is prior to the
+        endpoint in the base section. If --endpoint option is specified, --endpoint
         option has the highest priority.
         (7) Bucket-Cname
-            Bucket-Cname specify CNAME host for every individual bucket, the section 
+            Bucket-Cname specify CNAME host for every individual bucket, the section
         is prior to Bucket-Endpoint and endpoint in the base section.
-            More information about CNAME host see: https://help.aliyun.com/document_detail/27112.html?spm=5176.product27099.4.6.Lf06oS#1. 
-            In current version, Bucket-Cname interactive configuration is removed, 
+            More information about CNAME host see: https://help.aliyun.com/document_detail/27112.html?spm=5176.product27099.4.6.Lf06oS#1.
+            In current version, Bucket-Cname interactive configuration is removed,
         but the option in config file is still effective.
-            When access a bucket, ossutil will search for endpoint corresponding 
-        tothe bucket in this section, if found, the endpoint has priority over 
-        the endpoint in Bucket-Endpoint and the endpoint in the base section. If 
+            When access a bucket, ossutil will search for endpoint corresponding
+        tothe bucket in this section, if found, the endpoint has priority over
+        the endpoint in Bucket-Endpoint and the endpoint in the base section. If
         --endpoint option is specified, --endpoint option has the highest priority.
 
         PRI: --endpoint option > Bucket-Cname > Bucket-Endpoint > endpoint > default endpoint
 
     2) ossutil config options
-        If any options except --language and --config-file is specified, the 
-    command enter the non interactive mode. All the configurations should be 
+        If any options except --language and --config-file is specified, the
+    command enter the non interactive mode. All the configurations should be
     specified by options.
 
 
 Credential File Format:
 
     [Credentials]
-        language = EN 
-        endpoint = ` + DefaultEndpoint + ` 
+        language = EN
+        endpoint = ` + DefaultEndpoint + `
         accessKeyID = your_key_id
         accessKeySecret = your_key_secret
         stsToken = your_sts_token
@@ -275,7 +276,7 @@ Credential File Format:
         ...
 `,
 
-	sampleText: ` 
+	sampleText: `
     ossutil config
     ossutil config -e oss-cn-hangzhou.aliyuncs.com -c ~/.myconfig
 `,
