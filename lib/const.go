@@ -1,8 +1,9 @@
 package lib
 
 import (
-	oss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"os"
+
+	oss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
 // all supported options of ossutil
@@ -45,6 +46,8 @@ const (
 	OptionInclude                 = "include"
 	OptionExclude                 = "exclude"
 	OptionMeta                    = "meta"
+	OptionPGPPublicKey            = "public"
+	OptionPGPPrivateKey           = "private"
 )
 
 // the elements show in stat object
@@ -137,6 +140,8 @@ const (
 	DefaultNonePattern             = ""
 	IncludePrompt                  = "--include"
 	ExcludePrompt                  = "--exclude"
+	DefaultPGPPublicKey            = "~" + string(os.PathSeparator) + ".ossutil.pubkey"
+	DefaultPGPPrivateKey           = "~" + string(os.PathSeparator) + ".ossutil.privkey"
 )
 
 const (

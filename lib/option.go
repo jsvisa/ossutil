@@ -3,9 +3,10 @@ package lib
 import (
 	"errors"
 	"fmt"
-	goopt "github.com/droundy/goopt"
 	"strconv"
 	"strings"
+
+	goopt "github.com/droundy/goopt"
 )
 
 type optionType int
@@ -106,7 +107,9 @@ var OptionMap = map[string]Option{
 		fmt.Sprintf("set the language of ossutil(default: %s), value range is: %s/%s, if you set it to \"%s\", please make sure your system language is UTF-8.", DefaultLanguage, ChineseLanguage, EnglishLanguage, ChineseLanguage)},
 	OptionHashType: Option{"", "--type", DefaultHashType, OptionTypeAlternative, fmt.Sprintf("%s/%s", DefaultHashType, MD5HashType), "", fmt.Sprintf("计算的类型, 默认值：%s, 取值范围: %s/%s", DefaultHashType, DefaultHashType, MD5HashType),
 		fmt.Sprintf("hash type, Default: %s, value range is: %s/%s", DefaultHashType, DefaultHashType, MD5HashType)},
-	OptionVersion: Option{"-v", "--version", "", OptionTypeFlagTrue, "", "", fmt.Sprintf("显示ossutil的版本（%s）并退出。", Version), fmt.Sprintf("Show ossutil version (%s) and exit.", Version)},
+	OptionVersion:       Option{"-v", "--version", "", OptionTypeFlagTrue, "", "", fmt.Sprintf("显示ossutil的版本（%s）并退出。", Version), fmt.Sprintf("Show ossutil version (%s) and exit.", Version)},
+	OptionPGPPublicKey:  Option{"", "--public-key", DefaultPGPPublicKey, OptionTypeString, "", "", fmt.Sprintf("用于 OpenPGP 加密公钥, 默认为：%s", DefaultPGPPublicKey), fmt.Sprintf("Used for OpenPGP encrypting(default: %s)", DefaultPGPPublicKey)},
+	OptionPGPPrivateKey: Option{"", "--private-key", DefaultPGPPrivateKey, OptionTypeString, "", "", fmt.Sprintf("用于 OpenPGP 解密私钥, 默认値：%s", DefaultPGPPrivateKey), fmt.Sprintf("Used for OpenPGP decrypting(default: %s)", DefaultPGPPrivateKey)},
 }
 
 func (T *Option) getHelp(language string) string {

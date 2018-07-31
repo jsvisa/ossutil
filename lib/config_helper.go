@@ -61,6 +61,15 @@ func DecideConfigFile(configFile string) string {
 	return configFile
 }
 
+func DecidePGPKeyPath(keyPath string) string {
+	usr, _ := user.Current()
+	dir := usr.HomeDir
+	if len(keyPath) >= 2 && strings.HasPrefix(keyPath, "~"+string(os.PathSeparator)) {
+		keyPath = strings.Replace(keyPath, "~", dir, 1)
+	}
+	return keyPath
+}
+
 // LoadConfig load the specified config file
 func LoadConfig(configFile string) (OptionMapType, error) {
 	var configMap OptionMapType
